@@ -1,0 +1,27 @@
+{
+  "name": "redux-eloquent",
+  "version": "1.0.0",
+  "description": "Query and mutate redux store in ORM style that you love",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SevenOutman/redux-eloquent.git"
+  },
+  "keywords": [
+    "redux",
+    "orm"
+  ],
+  "author": "Doma",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SevenOutman/redux-eloquent/issues"
+  },
+  "homepage": "https://github.com/SevenOutman/redux-eloquent#readme",
+  "dependencies": {
+    "normalizr": "^3.2.4",
+    "reselect": "^3.0.1"
+  }
+}
