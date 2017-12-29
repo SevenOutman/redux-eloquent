@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Query and mutate redux store in ORM style that you love",
   "main": "src/index.js",
+  "files": [
+    "src"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
