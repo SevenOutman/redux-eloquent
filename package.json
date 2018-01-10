@@ -1,6 +1,6 @@
 {
   "name": "redux-eloquent",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Query and mutate redux store in ORM style that you love",
   "main": "dist/redux-eloquent.min.js",
   "files": [
