@@ -3,6 +3,8 @@ import reducer from './reducer';
 export const rdbReducer = reducer;
 export { REDUCER_NAMESPACE } from './constants';
 
+export { bindStateDispatch } from './functions';
+
 export {
   defineEnum,
 } from './Enum';

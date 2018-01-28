@@ -2,6 +2,7 @@ import { schema } from 'normalizr';
 import Querier from './Querier';
 import Mutator from './Mutator';
 import { isEnum } from './Enum';
+import { dispatchFunc, getStateFunc } from './functions';
 
 const $isModelProp = `$isModel${Date.now()}`;
 
@@ -102,6 +103,29 @@ export function defineModel(tableName, fieldDefs = {}, options = {}) {
     value: $normalizrEntity,
     writable: false,
     enumerable: false,
+  });
+
+  // if bindStateDispatch
+  ['find', 'all', 'recent', 'with'].forEach(method => {
+    Model[method] =  (...args) => {
+      let storeGetState = getStateFunc();
+      if (!storeGetState) {
+          console.error('No state provided to create a Querier');
+      } else {
+          return Model(storeGetState())[method](...args);
+      }
+    }
+  });
+
+  ['save', 'saveBatch'].forEach(method => {
+    Model[method] =  (...args) => {
+      let dispatch = dispatchFunc();
+      if (!dispatch) {
+        console.error('No dispatch provided to create a Mutator');
+      } else {
+        return Model(dispatch)[method](...args);
+      }
+    }
   });
 
   return Object.seal(Model);

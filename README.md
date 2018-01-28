@@ -107,6 +107,11 @@ Book(dispatch).save({
 })
 ```
 
+#### `saveBatch(array)`
+
+Save an array of model entries.
+
+
 ### Querier
 
 When model takes a store state, it returns a `Querier` which has following methods.
@@ -129,7 +134,7 @@ Retrieves entries by given id (or other primary field values)
 import { Author } from './model.js'
 
 // in your mapState2Props(state) maybe
-Book.find('abcdefg')
+Book(state).find('abcdefg')
 ```
 
 #### `recent()`
@@ -139,8 +144,8 @@ Retrieves entries that you added with `save()` method EXPLICITLY， which means
 import { Book, Author } from './model.js'
 
 // in your mapState2Props(state) maybe
-Book.recent() // returns the 'abcdefg' book that you `save()`d earlier
-Author.recent() // does not return the 'id=15' author nested in that book
+Book(state).recent() // returns the 'abcdefg' book that you `save()`d earlier
+Author(state).recent() // does not return the 'id=15' author nested in that book
 ```
 
 #### `with(relation)`
@@ -155,7 +160,25 @@ Use `with()` to tell Mutator which model fields you want to be retrieved as nest
 import { Book, Author } from './model.js'
 
 // in your mapState2Props(state) maybe
-Book.recent() // { isbn: 'abcdefg', author: 15 }
+Book(state).recent() // { isbn: 'abcdefg', author: 15 }
 // 'author' is a Book's field's name, not a model key
-Book.with('author').recent() // { isbn: 'abcdefg', author: { id: 15, name: 'John' }}
+Book(state).with('author').recent() // { isbn: 'abcdefg', author: { id: 15, name: 'John' }}
+```
+
+### Advanced
+
+#### `bindStateDispatch({ getState, dispatch})`
+
+If you find this `Model(state)` and `Model(dispatch)` term inconvenient, 
+you can bind a redux store to `redux-eloquent` and it will use the stores `getState()` and `dispatch`
+
+```js
+import { bindStateDispatch, Book } from 'redux-eloquent';
+
+const store = createStore(/*...*/)
+
+bindStateDispatch(store);
+
+// then you can query like this
+Book.all();
 ```
