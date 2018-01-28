@@ -167,18 +167,19 @@ Book(state).with('author').recent() // { isbn: 'abcdefg', author: { id: 15, name
 
 ### Advanced
 
-#### `bindStateDispatch({ getState, dispatch})`
+#### `bindStateDispatch({ getState, dispatch })`
 
 If you find this `Model(state)` and `Model(dispatch)` term inconvenient, 
 you can bind a redux store to `redux-eloquent` and it will use the stores `getState()` and `dispatch`
 
 ```js
-import { bindStateDispatch, Book } from 'redux-eloquent';
+import { bindStateDispatch, rdbReducer as rdb } from 'redux-eloquent'
+import { Book } from './model.js'
 
-const store = createStore(/*...*/)
+const store = createStore(/*...rdb...*/)
 
-bindStateDispatch(store);
+bindStateDispatch(store)
 
 // then you can query like this
-Book.all();
+Book.all()
 ```
