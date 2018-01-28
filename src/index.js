@@ -1,6 +1,7 @@
 import reducer from './reducer';
 
 export const rdbReducer = reducer;
+export { REDUCER_NAMESPACE } from './constants';
 
 export {
   defineEnum,

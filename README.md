@@ -4,7 +4,16 @@
 
 ## Usage
 This simple example assumes you are familiar with using `react` `redux` and `react-redux`.
+```js
+// First of all
+import { rdbReducer /*, REDUCER_NAMESPACE */ } from 'redux-eloquent'
 
+
+createStore({
+  // name it 'rdb' or use REDUCER_NAMESPACE constant
+  rdb: rdbReducer
+})
+```
 ```js
 // Your models.js
 import { defineModel, primary, id } from 'redux-eloquent'
