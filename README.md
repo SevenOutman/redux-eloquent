@@ -181,5 +181,6 @@ const store = createStore(/*...rdb...*/)
 bindStateDispatch(store)
 
 // then you can query like this
+// more interestingly, you can now use it anywhere in your component, not only in mapState2Props
 Book.all()
 ```
