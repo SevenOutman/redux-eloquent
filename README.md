@@ -85,7 +85,9 @@ Author.define({
 
 ### Mutator
 
-When model takes a dispatch function, it returns a `Mutator` which has following methods.
+A model is actually a function, which takes a store state or dispatch function as parameter.
+
+When it takes a dispatch function, it returns a `Mutator` which has following methods.
 
 #### `save(obj)`
 
@@ -107,9 +109,7 @@ Book(dispatch).save({
 
 ### Querier
 
-A model is actually a function, which takes a store state or dispatch function as parameter.
-
-When it takes a store state, it returns a `Querier` which has following methods.
+When model takes a store state, it returns a `Querier` which has following methods.
 
 #### `all()`
 
