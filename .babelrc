@@ -1,0 +1,16 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "target": {
+          "browsers": [
+            "last 2 versions",
+            "IE >= 9"
+          ]
+        }
+      }
+    ],
+    "stage-0"
+  ]
+}
