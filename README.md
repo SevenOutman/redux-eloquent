@@ -1,6 +1,11 @@
 # redux-eloquent
 
-`redux-eloquent` allows you to query and mutate your `redux` store in ORM style.
+[![npm](https://img.shields.io/npm/v/redux-eloquent.svg?style=flat-square)](https://www.npmjs.com/package/vue-aplayer)
+[![npm](https://img.shields.io/npm/l/redux-eloquent.svg?style=flat-square)](https://github.com/SevenOutman/vue-aplayer/blob/master/LICENSE)
+[![devDependency Status](https://img.shields.io/david/dev/SevenOutman/redux-eloquent.svg?style=flat-square)](https://david-dm.org/SevenOutman/vue-aplayer#info=devDependencies)
+[![npm](https://img.shields.io/npm/dt/redux-eloquent.svg?style=flat-square)](https://www.npmjs.com/package/vue-aplayer)
+
+Query and mutate your `redux` store in ORM style.
 
 ## Usage
 This simple example assumes you are familiar with using `react` `redux` and `react-redux`.
@@ -131,7 +136,7 @@ Publisher(state).all()
 Retrieves entries by given id (or other primary field values)
 - `id` primary field value. if `id` is an array, `find` returns an array of according entries
 ```js
-import { Author } from './model.js'
+import { Book } from './model.js'
 
 // in your mapState2Props(state) maybe
 Book(state).find('abcdefg')
@@ -139,7 +144,7 @@ Book(state).find('abcdefg')
 
 #### `recent()`
 
-Retrieves entries that you added with `save()` method EXPLICITLY， which means
+Retrieves entries that you added with `save()` method EXPLICITLY, which means
 ```js
 import { Book, Author } from './model.js'
 
@@ -153,9 +158,9 @@ Author(state).recent() // does not return the 'id=15' author nested in that book
 In `rdbReducer` there's no nested data, entries of different models are stored separately.
 So by default, Querier does not return nested data as well, nested models are represented by their primary field value.
 
-Use `with()` to tell Mutator which model fields you want to be retrieved as nested objects.
+Use `with()` to tell Querier which model fields you want to be retrieved as nested objects.
 
-`with()` return the Mutator itself so you can do chaining.
+`with()` return the Querier itself so you can do chaining.
 ```js
 import { Book, Author } from './model.js'
 
@@ -164,6 +169,42 @@ Book(state).recent() // { isbn: 'abcdefg', author: 15 }
 // 'author' is a Book's field's name, not a model key
 Book(state).with('author').recent() // { isbn: 'abcdefg', author: { id: 15, name: 'John' }}
 ```
+
+### Helpers
+
+#### `primary(type)`
+
+Mark a field as primary.
+`defineModel()` actually accepts a third parameter as `options`, 
+in which you can set a primary field as
+
+```js
+import { defineModel } from 'redux-eloquent'
+ 
+const Books = defineModel('books', {
+  isbn: String,
+  title: String
+}, {
+  primaryKey: 'isbn'
+})
+```
+
+With `primary()` helper
+
+```js
+import { defineModel, primary } from 'redux-eloquent'
+
+const Books = defineModel('books', {
+  isbn: primary(String),
+  title: String
+})
+```
+
+Handy right?
+
+#### `id`
+
+Short hand for `primary(Number)`
 
 ### Advanced
 
