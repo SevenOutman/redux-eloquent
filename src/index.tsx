@@ -12,6 +12,7 @@ Book.insert({
     data: [
         {
             id: 2,
+            title: 'One day',
             author: {
                 id: 1,
                 name: 'haha'
@@ -19,6 +20,7 @@ Book.insert({
         },
         {
             id: 3,
+            title: 'Another day',
             author: {
                 id: 1,
                 name: 'haha'
@@ -26,8 +28,15 @@ Book.insert({
         }
     ]
 });
+Book.insertOrUpdate({
+    data: {
+        id: 3,
+        title: 'Another another day'
+    }
+})
+// Book.deleteAll();
+console.log(Author.query().with('books.author').all(), Book.query().with('author').findIn([2, 3]));
 
-console.log(Author.query().with('books.author').all());
 
 ReactDOM.render(
     <Provider store={store}>

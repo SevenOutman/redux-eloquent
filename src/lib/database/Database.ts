@@ -5,7 +5,6 @@ import Model from '../model/Model'
 // import ModuleBuilder from '../modules/builder/Builder'
 import Entity from './Entity'
 import Models from './Models'
-import RootMutations from "@/lib/modules/RootMutations";
 
 export default class Database {
     /**
@@ -135,12 +134,41 @@ export default class Database {
             if (!action.type.startsWith(this.namespace)) {
                 return state;
             }
-            const segs = action.type.split('/');
-            const method = segs[1];
-            RootMutations[method](state, {...action.payload, result: {data: {}}});
+            const method = action.type.split('/')[1];
+            const query = action.payload.query;
+            const data = action.payload.data;
+            const options = action.payload.options;
+
+            switch (method) {
+                case 'new':
+                    query.new();
+                    break;
+                case 'create':
+                    query.create(data, options);
+                    break;
+                case 'insert':
+                    query.insert(data, options);
+                    break;
+                case 'update':
+                    query.update(data, action.payload.where || null, options);
+                    break;
+                case 'insertOrUpdate':
+                    query.insertOrUpdate(data, options);
+                    break;
+                case 'delete':
+                    query.delete(action.payload.where);
+                    break;
+                case 'deleteAll':
+                    query.deleteAll();
+                    break;
+                default:
+                    break;
+            }
+
             return {...state};
         }
     }
+
     // getReducer(): Redux.Reducer {
     //     return Redux.combineReducers(Object.keys(this.models()).reduce((acc, name) => {
     //         const model = this.model(name);

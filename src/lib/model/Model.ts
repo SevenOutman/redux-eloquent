@@ -12,12 +12,15 @@ import Mutator from '../attributes/contracts/Mutator'
 import Mutators from '../attributes/contracts/Mutators'
 import Query from '../query/Query'
 import * as Payloads from '../modules/payloads/Actions'
+import * as MutationPayloads from '../modules/payloads/RootMutations'
 import Fields from './contracts/Fields'
 import ModelState from './contracts/State'
 import Serializer from './Serializer'
 import * as Data from "@/lib/data";
 import PersistOptions from "@/lib/modules/payloads/PersistOptions";
 import OptionsBuilder from "@/lib/modules/support/OptionsBuilder";
+import RootState from "@/lib/modules/contracts/RootState";
+import Result from "@/lib/query/contracts/Result";
 
 type InstanceOf<T> = T extends new (...args: any[]) => infer R ? R : any
 
@@ -289,6 +292,10 @@ export default class Model {
         return this.database().store
     }
 
+    static rootState(): RootState {
+        return this.store().getState()[this.database().namespace];
+    }
+
     /**
      * Create a namespaced method name for Vuex Module from the given
      * method name.
@@ -301,18 +308,10 @@ export default class Model {
      * Call Vuex Getters.
      */
     static getters(method: string): any {
-        const query = this.reselectSelector(this.store().getState());
+        const query = this.reselectSelector();
         if (method === 'query') return query;
 
         return query[method].bind(query);
-    }
-
-    static reduxReducer(state = {
-        $connection: this.namespace(),
-        $name: this.entity,
-        data: {}
-    }, action: { type: string }) {
-        return state;
     }
 
     static reselectSelector<T extends typeof Model>(this: T, state: any = this.store().getState()): Query<InstanceOf<T>> {
@@ -323,13 +322,16 @@ export default class Model {
      * Dispatch Vuex Action.
      */
     static dispatch(method: string, payload?: any): any {
-        const query = new Query(this.store().getState()[this.database().namespace], this.entity);
+        const result: Result = {data: {}};
+        const entity = this.entity;
+        const state = this.rootState();
+
         return this.store().dispatch({
             type: `${this.database().namespace}/${method}`,
             payload: {
-                entity: this.entity,
-                query,
-                ...payload
+                ...payload,
+                entity,
+                query: new Query(state, entity).setResult(result),
             }
         });
     }
@@ -370,7 +372,7 @@ export default class Model {
      * Get query instance.
      */
     static query<T extends typeof Model>(this: T): Query<InstanceOf<T>> {
-        return this.reselectSelector();
+        return this.getters('query');
     }
 
     /**
@@ -386,7 +388,8 @@ export default class Model {
      * use the `insert` method instead.
      */
     static create<T extends typeof Model>(this: T, payload: Payloads.Create): Promise<Collections<InstanceOf<T>>> {
-        return this.dispatchPersist('create', payload)
+        const options = OptionsBuilder.createPersistOptions(payload)
+        return this.dispatchPersist('create', {...payload, options});
     }
 
     /**
@@ -400,15 +403,18 @@ export default class Model {
     /**
      * Update records.
      */
-    static update<T extends typeof Model>(this: T, payload: Payloads.Update): Promise<Collections<InstanceOf<T>>> {
-        return this.dispatchPersist('update', payload)
+    static update<T extends typeof Model>(this: T, payload: MutationPayloads.Update): Promise<Collections<InstanceOf<T>>> {
+        const where = payload.where || null
+        const options = OptionsBuilder.createPersistOptions(payload)
+        return this.dispatchPersist('update', {...payload, where, options});
     }
 
     /**
      * Insert or update records.
      */
     static insertOrUpdate<T extends typeof Model>(this: T, payload: Payloads.InsertOrUpdate): Promise<Collections<InstanceOf<T>>> {
-        return this.dispatchPersist('insertOrUpdate', payload)
+        const options = OptionsBuilder.createPersistOptions(payload)
+        return this.dispatchPersist('insertOrUpdate', {...payload, options})
     }
 
     /**

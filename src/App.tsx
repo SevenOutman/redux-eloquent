@@ -23,7 +23,7 @@ class App extends React.Component<Props> {
                 <ul>
                     {
                         this.props.books.map((book, index) => (
-                            <li key={index}>{book.name} by {book.author.name}</li>
+                            <li key={index}>{book.title} by {book.author.name}</li>
                         ))
                     }
                 </ul>
